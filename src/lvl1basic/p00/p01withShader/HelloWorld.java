@@ -24,11 +24,11 @@ import static org.lwjgl.system.MemoryUtil.*;
 
 public class HelloWorld {
 
-	int width, height;
+	private int width, height;
 
 	// The window handle
 	private long window;
-	int shaderProgram;
+	private int shaderProgram;
 	
 	private void init() {
 		// Setup an error callback. The default implementation
