@@ -97,37 +97,39 @@ public abstract class AbstractRenderer {
     };
     
     protected GLFWMouseButtonCallback mbCallback = new GLFWMouseButtonCallback () {
-		
+
 		@Override
 		public void invoke(long window, int button, int action, int mods) {
 			//mouseButton1 = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS;
-			DoubleBuffer xBuffer = BufferUtils.createDoubleBuffer(1);
+			/*DoubleBuffer xBuffer = BufferUtils.createDoubleBuffer(1);
 			DoubleBuffer yBuffer = BufferUtils.createDoubleBuffer(1);
 			glfwGetCursorPos(window, xBuffer, yBuffer);
 			double x = xBuffer.get(0);
 			double y = yBuffer.get(0);
-			
+
 			if (button==GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS){
 				System.out.println("Mouse button 1 is pressed at coursor position [" + x + ", " + y + "]");
 			}
-			
+
 			if (button==GLFW_MOUSE_BUTTON_1 && action == GLFW_RELEASE){
 				System.out.println("Mouse button 1 is released at coursor position [" + x + ", " + y + "]");
         	}
+
+			 */
 		}
-		
+
 	};
 	
 	protected GLFWCursorPosCallback cpCallbacknew = new GLFWCursorPosCallback() {
         @Override
         public void invoke(long window, double x, double y) {
-        	System.out.println("Coursor position [" + x + ", " + y + "]");
+       // 	System.out.println("Coursor position [" + x + ", " + y + "]");
     	}
     };
     
     protected GLFWScrollCallback scrollCallback = new GLFWScrollCallback() {
         @Override public void invoke (long window, double dx, double dy) {
-            System.out.println("Mouse whell velocity " + dy);
+        //    System.out.println("Mouse whell velocity " + dy);
         }
     };
  
