@@ -2,6 +2,8 @@ package lvl2advanced.p01gui.p01simple;
 
 
 import lwjglutils.OGLBuffers;
+import lwjglutils.OGLRenderTarget;
+import lwjglutils.OGLTexture2D;
 import lwjglutils.ShaderUtils;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
@@ -14,9 +16,11 @@ import transforms.*;
 import java.nio.DoubleBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.ARBFramebufferObject.GL_FRAMEBUFFER;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11C.glClear;
 import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.glBindFramebuffer;
 
 
 /**
@@ -35,6 +39,9 @@ public class Renderer extends AbstractRenderer{
     private Camera camera;
     private int locTime;
     private float time;
+
+    private OGLRenderTarget renderTarget;
+    private OGLTexture2D.Viewer viewer;
 
     double ox, oy;
     boolean mouseButton1 = false;
@@ -60,6 +67,8 @@ public class Renderer extends AbstractRenderer{
         locTime =  glGetUniformLocation(shaderProgram, "time");
 
         buffers = GridFactory.generateGrid(100,100);
+        renderTarget = new OGLRenderTarget(1024,1024);
+        viewer = new OGLTexture2D.Viewer();
 
         camera = new Camera()
                 .withPosition(new Vec3D(0,0,0))
@@ -80,13 +89,17 @@ public class Renderer extends AbstractRenderer{
         projection = new Mat4PerspRH(Math.PI/3,
                 //aktualizovat po rozsireni okna pres windowsizecallback
                 LwjglWindow.HEIGHT / (float) LwjglWindow.WIDTH, 1, 20);
-
     }
+
+
+
 
     public void display(){
 
         glUseProgram(shaderProgram);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        renderTarget.bind();
 
         glViewport(0,0, width, height);
         glUniformMatrix4fv(locView, false, camera.getViewMatrix().floatArray());
@@ -94,8 +107,16 @@ public class Renderer extends AbstractRenderer{
 
         time += 0.1;
         glUniform1f(locTime, time);
-
+//kktiny here
         buffers.draw(GL_TRIANGLES, shaderProgram);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClearColor(0.1f,0.5f,0f,1);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glViewport(0,0, width, height);
+
+        viewer.view(renderTarget.getColorTexture(), -1,0,0.5);
+        //do sem
     }
     private GLFWKeyCallback   keyCallback = new GLFWKeyCallback() {
         @Override
