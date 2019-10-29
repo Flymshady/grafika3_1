@@ -42,7 +42,7 @@ public class Renderer extends AbstractRenderer{
     private Mat4PerspRH projection;
     private Camera camera;
     private int locTime;
-   // private int locType, locTypeLight;
+    private int locType, locTypeLight;
     private int locTimeLight;
     private float time;
 
@@ -71,12 +71,12 @@ public class Renderer extends AbstractRenderer{
 
         locView = glGetUniformLocation(shaderProgram, "view");
         locProjection = glGetUniformLocation(shaderProgram, "projection");
-      //  locType=  glGetUniformLocation(shaderProgram, "type");
+        locType=  glGetUniformLocation(shaderProgram, "type");
         locTime =  glGetUniformLocation(shaderProgram, "time");
 
         locViewLight = glGetUniformLocation(shaderProgramLight, "view");
         locProjectionLight = glGetUniformLocation(shaderProgramLight, "projection");
-      //  locTypeLight =  glGetUniformLocation(shaderProgram, "type");
+        locTypeLight =  glGetUniformLocation(shaderProgramLight, "type");
         locTimeLight =  glGetUniformLocation(shaderProgramLight, "time");
 
         locLightVP = glGetUniformLocation(shaderProgram, "lightViewProjection");
@@ -168,9 +168,9 @@ public class Renderer extends AbstractRenderer{
 
         glUniform1f(locTimeLight, time);
 
-        //    glUniform1f(locTypeLight, 0);
-        //draw
-        //    glUniform1f(locTypeLight, 1);
+            glUniform1f(locTypeLight, 0);
+        buffers.draw(GL_TRIANGLES, shaderProgramLight);
+            glUniform1f(locTypeLight, 1);
         buffers.draw(GL_TRIANGLES, shaderProgramLight);
 
         //tohle samy znova pro jinej jen s jinym ukazatelem
@@ -193,13 +193,16 @@ public class Renderer extends AbstractRenderer{
 
         glUniformMatrix4fv(locLightVP,false,cameraLight.getViewMatrix().mul(projection).floatArray());
 
-        renderTarget.getColorTexture().bind(shaderProgram, "depthTexture");
+        //misto depth dat color
+        renderTarget.getDepthTexture().bind(shaderProgram, "depthTexture");
 
 
       //  time += 0.1;
         glUniform1f(locTime, time);
 
-
+        glUniform1f(locType, 0);
+        buffers.draw(GL_TRIANGLES, shaderProgram);
+        glUniform1f(locType, 1);
         buffers.draw(GL_TRIANGLES, shaderProgram);
 
     }
