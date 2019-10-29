@@ -32,12 +32,18 @@ import static org.lwjgl.opengl.GL30.glBindFramebuffer;
 public class Renderer extends AbstractRenderer{
 
     private int shaderProgram;
+    private int shaderProgramLight;
     private OGLBuffers buffers;
     private int locView;
+    private int locViewLight;
     private int locProjection;
+    private int locProjectionLight;
+    private int locLightVP;
     private Mat4PerspRH projection;
     private Camera camera;
     private int locTime;
+   // private int locType, locTypeLight;
+    private int locTimeLight;
     private float time;
 
     private OGLRenderTarget renderTarget;
@@ -45,6 +51,7 @@ public class Renderer extends AbstractRenderer{
 
     double ox, oy;
     boolean mouseButton1 = false;
+    private Camera cameraLight;
 
     public void init(){
         glClearColor(0.1f,0.1f,0.1f,1);
@@ -60,14 +67,22 @@ public class Renderer extends AbstractRenderer{
 
         glEnable(GL_DEPTH_TEST);
         shaderProgram = ShaderUtils.loadProgram("/lvl1basic/p01start/start");
+        shaderProgramLight = ShaderUtils.loadProgram("/lvl1basic/p01start/light");
 
         locView = glGetUniformLocation(shaderProgram, "view");
         locProjection = glGetUniformLocation(shaderProgram, "projection");
-
+      //  locType=  glGetUniformLocation(shaderProgram, "type");
         locTime =  glGetUniformLocation(shaderProgram, "time");
 
+        locViewLight = glGetUniformLocation(shaderProgramLight, "view");
+        locProjectionLight = glGetUniformLocation(shaderProgramLight, "projection");
+      //  locTypeLight =  glGetUniformLocation(shaderProgram, "type");
+        locTimeLight =  glGetUniformLocation(shaderProgramLight, "time");
+
+        locLightVP = glGetUniformLocation(shaderProgramLight, "lightViewProjection");
+
         buffers = GridFactory.generateGrid(100,100);
-   //     renderTarget = new OGLRenderTarget(1024,1024);
+        renderTarget = new OGLRenderTarget(1024,1024);
         viewer = new OGLTexture2D.Viewer();
 
         camera = new Camera()
@@ -75,7 +90,13 @@ public class Renderer extends AbstractRenderer{
                 .withAzimuth(5/4f* Math.PI)
                 .withZenith(-1/5f*Math.PI)
                 .withFirstPerson(false)
-                .withRadius(4);
+                .withRadius(6);
+
+        cameraLight = new Camera()
+                .withPosition(new Vec3D(6,6,6))
+                .withAzimuth(5/4f* Math.PI)
+                .withZenith(-1/5f*Math.PI);
+
 
       //kamera pres view
         /*
@@ -96,9 +117,14 @@ public class Renderer extends AbstractRenderer{
 
     public void display(){
 
+        time += 0.1;
         renderFromLight();
         renderFromViewer();
 
+        viewer.view(renderTarget.getColorTexture(), -1,0,0.5);
+        viewer.view(renderTarget.getDepthTexture(), -1,-0.5,0.5);
+
+/*
         glUseProgram(shaderProgram);
         glViewport(0,0, width, height);
         glClearColor(0.5f,0f,0f,1);
@@ -114,22 +140,63 @@ public class Renderer extends AbstractRenderer{
         glUniform1f(locTime, time);
 //kktiny here
         buffers.draw(GL_TRIANGLES, shaderProgram);
-/*
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glClearColor(0.1f,0.5f,0f,1);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glViewport(0,0, width, height);
 
-        viewer.view(renderTarget.getColorTexture(), -1,0,0.5);
+      //  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+       // glClearColor(0.1f,0.5f,0f,1);
+        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //glViewport(0,0, width, height);
 
-*/
+        //viewer.view(renderTarget.getColorTexture(), -1,0,0.5);
+
+
         //do sem
+        */
     }
 
     private void renderFromLight() {
+
+        glUseProgram(shaderProgramLight);
+        renderTarget.bind();
+        glClearColor(0f,0.5f,0f,1);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+        glUniformMatrix4fv(locViewLight, false, cameraLight.getViewMatrix().floatArray());
+        glUniformMatrix4fv(locProjectionLight, false, projection.floatArray());
+
+
+
+        glUniform1f(locTimeLight, time);
+
+        //    glUniform1f(locTypeLight, 0);
+        //draw
+        //    glUniform1f(locTypeLight, 1);
+        buffers.draw(GL_TRIANGLES, shaderProgramLight);
+
+        //tohle samy znova pro jinej jen s jinym ukazatelem
     }
 
     private void renderFromViewer() {
+
+
+
+        glUseProgram(shaderProgram);
+        glViewport(0,0, width, height);
+        //defaultni framebuffer - render do obrazovky
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        glClearColor(0.5f,0f,0f,1);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glUniformMatrix4fv(locView, false, camera.getViewMatrix().floatArray());
+        glUniformMatrix4fv(locProjection, false, projection.floatArray());
+
+      //  time += 0.1;
+        glUniform1f(locTime, time);
+
+
+        buffers.draw(GL_TRIANGLES, shaderProgram);
+
     }
 
     private GLFWKeyCallback   keyCallback = new GLFWKeyCallback() {
