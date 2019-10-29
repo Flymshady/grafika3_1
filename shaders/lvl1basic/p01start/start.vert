@@ -4,11 +4,13 @@ in vec2 inPosition; // input from the vertex buffer
 uniform mat4 view;
 uniform mat4 projection;
 uniform float time;
+uniform mat4 lightViewProjection;
 
 // out vec3  vertColor; //bud ev projektu
 out vec3 normal;
 out vec3 light;
 out vec3 viewDirection;
+out vec4 depthTextureCoord;
 
 
 float getZ(vec2 vec) {
@@ -56,5 +58,9 @@ void main() {
     light = lightPos - (view * pos4).xyz;
 
     viewDirection = -(view* pos4).xyz;
+
+    depthTextureCoord = lightViewProjection * pos4;
+    depthTextureCoord.xyz = depthTextureCoord.xyz/depthTextureCoord.w;
+    depthTextureCoord.xyz = (depthTextureCoord.xyz + 1) / 2;
 
 } 

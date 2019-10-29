@@ -79,7 +79,7 @@ public class Renderer extends AbstractRenderer{
       //  locTypeLight =  glGetUniformLocation(shaderProgram, "type");
         locTimeLight =  glGetUniformLocation(shaderProgramLight, "time");
 
-        locLightVP = glGetUniformLocation(shaderProgramLight, "lightViewProjection");
+        locLightVP = glGetUniformLocation(shaderProgram, "lightViewProjection");
 
         buffers = GridFactory.generateGrid(100,100);
         renderTarget = new OGLRenderTarget(1024,1024);
@@ -190,6 +190,11 @@ public class Renderer extends AbstractRenderer{
 
         glUniformMatrix4fv(locView, false, camera.getViewMatrix().floatArray());
         glUniformMatrix4fv(locProjection, false, projection.floatArray());
+
+        glUniformMatrix4fv(locLightVP,false,cameraLight.getViewMatrix().mul(projection).floatArray());
+
+        renderTarget.getColorTexture().bind(shaderProgram, "depthTexture");
+
 
       //  time += 0.1;
         glUniform1f(locTime, time);
