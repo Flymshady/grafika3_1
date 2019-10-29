@@ -15,7 +15,7 @@ float getZ(vec2 vec) {
     return sin(time + vec.y * 3.14 *2);
 }
 
-
+// udelat taj dalsi objekt
 vec3 getSphere(vec2 vec) {
     float az = vec.x * 3.14;
     float ze = vec.y * 3.14 / 2;
@@ -27,7 +27,7 @@ vec3 getSphere(vec2 vec) {
 
     return vec3(x,y,z);
 }
-
+//a taj taky to samy jinak
 vec3 getSphereNormal(vec2 vec){
     vec3 u = getSphere(vec+vec2(0.001, 0))
                 - getSphere(vec-vec2(0.001,0));
@@ -39,7 +39,7 @@ vec3 getSphereNormal(vec2 vec){
 }
 
 void main() {
-
+//metoda na rozvetveni objektu pres type == 1 ...
     vec2 position;
     position = inPosition * 2 - 1;
   //  vec4 pos4 = vec4(position, getZ(position), 1.0);
@@ -55,6 +55,6 @@ void main() {
     vec3 lightPos = vec3(1,1,0);
     light = lightPos - (view * pos4).xyz;
 
-    viewDirection = - pos4.xyz;
+    viewDirection = -(view* pos4).xyz;
 
 } 

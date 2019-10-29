@@ -16,7 +16,7 @@ void main() {
 	vec4 diffuse = vec4(NdotL*vec3(0,0.8,0),1);
 
 
-	vec3 halfVector = normalize(light)+normalize(viewDirection);
+	vec3 halfVector = normalize(normalize(light)+normalize(viewDirection));
 	float NdotH = dot(normalize(normal), halfVector);
 	vec4 specular = vec4(pow(NdotH, 16)*vec3(0,0,0.8),1);
 

@@ -67,7 +67,7 @@ public class Renderer extends AbstractRenderer{
         locTime =  glGetUniformLocation(shaderProgram, "time");
 
         buffers = GridFactory.generateGrid(100,100);
-        renderTarget = new OGLRenderTarget(1024,1024);
+   //     renderTarget = new OGLRenderTarget(1024,1024);
         viewer = new OGLTexture2D.Viewer();
 
         camera = new Camera()
@@ -96,12 +96,17 @@ public class Renderer extends AbstractRenderer{
 
     public void display(){
 
+        renderFromLight();
+        renderFromViewer();
+
         glUseProgram(shaderProgram);
+        glViewport(0,0, width, height);
+        glClearColor(0.5f,0f,0f,1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        renderTarget.bind();
+   //     renderTarget.bind();
 
-        glViewport(0,0, width, height);
+
         glUniformMatrix4fv(locView, false, camera.getViewMatrix().floatArray());
         glUniformMatrix4fv(locProjection, false, projection.floatArray());
 
@@ -109,15 +114,24 @@ public class Renderer extends AbstractRenderer{
         glUniform1f(locTime, time);
 //kktiny here
         buffers.draw(GL_TRIANGLES, shaderProgram);
-
+/*
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClearColor(0.1f,0.5f,0f,1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glViewport(0,0, width, height);
 
         viewer.view(renderTarget.getColorTexture(), -1,0,0.5);
+
+*/
         //do sem
     }
+
+    private void renderFromLight() {
+    }
+
+    private void renderFromViewer() {
+    }
+
     private GLFWKeyCallback   keyCallback = new GLFWKeyCallback() {
         @Override
         public void invoke(long window, int key, int scancode, int action, int mods) {
