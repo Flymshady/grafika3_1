@@ -6,8 +6,11 @@ in vec3 normal;
 in vec3 light;
 in vec3 viewDirection;
 in vec4 depthTextureCoord;
+in vec2 texCoord;
 
 uniform sampler2D depthTexture;
+uniform sampler2D texture1;
+
 
 
 void main() {
@@ -23,8 +26,10 @@ void main() {
 	float NdotH = dot(normalize(normal), halfVector);
 	vec4 specular = vec4(pow(NdotH, 16)*vec3(0,0,0.8),1);
 
+    vec4 textureColor =texture(texture1, texCoord);
+
 //odkomentovat svetlo
-	//outColor = ambient +diffuse +specular;
+    vec4 finalColor = ambient +diffuse +specular;
 	//	tohle uz nwm co je tk to ne
 	//= vec4(vertColor, 1.0);
 
@@ -32,11 +37,16 @@ void main() {
 
 	float zA = depthTextureCoord.z;
 
-	bool shadow = zL < zA - 0.0001; //0.0001 =bias
+	bool shadow = zL < zA - 0.001; //0.0001 =bias
 	if(shadow) {
-		outColor = vec4(1,0,0,1);
+		outColor = ambient *textureColor;
+        //vec4(1,0,0,1);
 	}else{
-		outColor=vec4(0,1,0,1);
+		outColor=textureColor * finalColor;
+        //=vec4(0,1,0,1);
 	}
+
+    // outColor = vec4 (normalize(normal), 1.0); zobrazeni normaly do textury
+    // outColor = depthTextureCoord;
 
 } 

@@ -12,7 +12,7 @@ out vec3 normal;
 out vec3 light;
 out vec3 viewDirection;
 out vec4 depthTextureCoord;
-
+out vec2 texCoord;
 
 float getZ(vec2 vec) {
     return sin(time + vec.y * 3.14 *2);
@@ -100,6 +100,8 @@ void main() {
     }
     vec3 lightPos = vec3(1, 1, 0);
     light = lightPos - (view * pos4).xyz;
+
+    texCoord = inPosition;
 
     viewDirection = -(view* pos4).xyz;
     depthTextureCoord = lightViewProjection * pos4;

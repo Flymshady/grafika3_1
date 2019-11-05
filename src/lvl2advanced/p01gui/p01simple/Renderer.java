@@ -1,6 +1,7 @@
 package lvl2advanced.p01gui.p01simple;
 
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import lwjglutils.OGLBuffers;
 import lwjglutils.OGLRenderTarget;
 import lwjglutils.OGLTexture2D;
@@ -13,6 +14,7 @@ import org.lwjgl.glfw.GLFWScrollCallback;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import transforms.*;
 
+import java.io.IOException;
 import java.nio.DoubleBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -48,14 +50,16 @@ public class Renderer extends AbstractRenderer{
 
     private OGLRenderTarget renderTarget;
     private OGLTexture2D.Viewer viewer;
+    private OGLTexture2D texture1;
 
     double ox, oy;
     boolean mouseButton1 = false;
     private Camera cameraLight;
 
     public void init(){
-        glClearColor(0.1f,0.1f,0.1f,1);
 
+        glClearColor(0.1f,0.1f,0.1f,1);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         /*
         glPolygonMode();
@@ -66,6 +70,7 @@ public class Renderer extends AbstractRenderer{
         */
 
         glEnable(GL_DEPTH_TEST);
+
         shaderProgram = ShaderUtils.loadProgram("/lvl1basic/p01start/start");
         shaderProgramLight = ShaderUtils.loadProgram("/lvl1basic/p01start/light");
 
@@ -84,6 +89,13 @@ public class Renderer extends AbstractRenderer{
         buffers = GridFactory.generateGrid(100,100);
         renderTarget = new OGLRenderTarget(1024,1024);
         viewer = new OGLTexture2D.Viewer();
+
+
+        try {
+            texture1 = new OGLTexture2D("./textures/mosaic.jpg");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         camera = new Camera()
                 .withPosition(new Vec3D(0,0,0))
@@ -116,7 +128,7 @@ public class Renderer extends AbstractRenderer{
 
 
     public void display(){
-
+      //  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); taj to asi byt nema
         time += 0.1;
         renderFromLight();
         renderFromViewer();
@@ -166,6 +178,7 @@ public class Renderer extends AbstractRenderer{
 
 
 
+
         glUniform1f(locTimeLight, time);
 
             glUniform1f(locTypeLight, 0);
@@ -190,11 +203,14 @@ public class Renderer extends AbstractRenderer{
 
         glUniformMatrix4fv(locView, false, camera.getViewMatrix().floatArray());
         glUniformMatrix4fv(locProjection, false, projection.floatArray());
-
         glUniformMatrix4fv(locLightVP,false,cameraLight.getViewMatrix().mul(projection).floatArray());
 
+
+
         //misto depth dat color
-        renderTarget.getDepthTexture().bind(shaderProgram, "depthTexture");
+        renderTarget.getDepthTexture().bind(shaderProgram, "depthTexture",1);
+
+        texture1.bind(shaderProgram, "texture/mosaic",0);
 
 
       //  time += 0.1;
