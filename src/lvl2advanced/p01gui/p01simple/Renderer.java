@@ -88,6 +88,7 @@ public class Renderer extends AbstractRenderer{
 
         buffers = GridFactory.generateGrid(100,100);
         renderTarget = new OGLRenderTarget(1024,1024);
+
         viewer = new OGLTexture2D.Viewer();
 
 
