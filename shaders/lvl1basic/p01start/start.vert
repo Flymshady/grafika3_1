@@ -15,7 +15,24 @@ out vec4 depthTextureCoord;
 out vec2 texCoord;
 
 float getZ(vec2 vec) {
-    return sin(time + vec.y * 3.14 *2);
+    return sin(time + vec.y * 3.14 *2)-1.5;
+}
+
+vec3 getVlnka(vec2 vec){
+    float x= vec.x;
+    float y=vec.y;
+    float z = getZ(vec);
+
+    return vec3(x,y,z);
+}
+vec3 getVlnkaNormal(vec2 vec){
+    vec3 u = getVlnka(vec+vec2(0.001, 0))
+    - getVlnka(vec-vec2(0.001,0));
+
+    vec3 v = getVlnka(vec+vec2(0, 0.001))
+    - getVlnka(vec-vec2(0, 0.001));
+
+    return cross(u,v); //vektorovy soucin
 }
 
 // udelat taj dalsi objekt
@@ -95,6 +112,15 @@ void main() {
         normal = mat3(view)* getSphere2Normal(position);
 
 
+
+
+    }
+    if(type==2){
+        position = inPosition * 2 - 1;
+        vec4(position, getZ(position) , 1.0);
+        pos4 = vec4(position, getZ(position), 1.0);
+        gl_Position = projection * view * pos4;
+        normal = mat3(view)* getVlnkaNormal(position);
 
 
     }

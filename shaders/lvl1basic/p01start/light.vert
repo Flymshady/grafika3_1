@@ -9,6 +9,9 @@ uniform float type;
 
 
 
+float getZ(vec2 vec) {
+    return sin(time + vec.y * 3.14 *2)-1.5;
+}
 
 // udelat taj dalsi objekt
 vec3 getSphere(vec2 vec) {
@@ -50,6 +53,15 @@ void main() {
         //  vec4 pos4 = vec4(position, getZ(position), 1.0);
         vec4 pos4 = vec4(getSphere2(position), 1.0);
         gl_Position = projection * view * pos4;
+    }
+    if(type==2){
+        vec2 position = inPosition * 2 - 1;
+        vec4(position, getZ(position) , 1.0);
+        vec4 pos4 = vec4(position, getZ(position), 1.0);
+        gl_Position = projection * view * pos4;
+
+
+
     }
 
 } 

@@ -2,10 +2,7 @@ package lvl2advanced.p01gui.p01simple;
 
 
 import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
-import lwjglutils.OGLBuffers;
-import lwjglutils.OGLRenderTarget;
-import lwjglutils.OGLTexture2D;
-import lwjglutils.ShaderUtils;
+import lwjglutils.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
@@ -51,6 +48,7 @@ public class Renderer extends AbstractRenderer{
     private OGLRenderTarget renderTarget;
     private OGLTexture2D.Viewer viewer;
     private OGLTexture2D texture1;
+    private OGLTextRenderer textRenderer;
 
     double ox, oy;
     boolean mouseButton1 = false;
@@ -88,7 +86,7 @@ public class Renderer extends AbstractRenderer{
 
         buffers = GridFactory.generateGrid(100,100);
         renderTarget = new OGLRenderTarget(1024,1024);
-
+        textRenderer = new OGLTextRenderer(width, height);
         viewer = new OGLTexture2D.Viewer();
 
 
@@ -136,6 +134,14 @@ public class Renderer extends AbstractRenderer{
 
         viewer.view(renderTarget.getColorTexture(), -1,0,0.5);
         viewer.view(renderTarget.getDepthTexture(), -1,-0.5,0.5);
+/*
+        textRenderer.clear();
+        String text = new String(": look at console and try keys, mouse, wheel and window interaction " );
+        textRenderer.addStr2D(3, height-3, text);
+        textRenderer.addStr2D(width-90, height-3, "Štěpán Cellar");
+        textRenderer.draw();
+
+ */
 
 /*
         glUseProgram(shaderProgram);
@@ -151,7 +157,7 @@ public class Renderer extends AbstractRenderer{
 
         time += 0.1;
         glUniform1f(locTime, time);
-//kktiny here
+//k here
         buffers.draw(GL_TRIANGLES, shaderProgram);
 
       //  glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -185,6 +191,8 @@ public class Renderer extends AbstractRenderer{
             glUniform1f(locTypeLight, 0);
         buffers.draw(GL_TRIANGLES, shaderProgramLight);
             glUniform1f(locTypeLight, 1);
+        buffers.draw(GL_TRIANGLES, shaderProgramLight);
+        glUniform1f(locTypeLight, 2);
         buffers.draw(GL_TRIANGLES, shaderProgramLight);
 
         //tohle samy znova pro jinej jen s jinym ukazatelem
@@ -220,6 +228,8 @@ public class Renderer extends AbstractRenderer{
         glUniform1f(locType, 0);
         buffers.draw(GL_TRIANGLES, shaderProgram);
         glUniform1f(locType, 1);
+        buffers.draw(GL_TRIANGLES, shaderProgram);
+        glUniform1f(locType, 2);
         buffers.draw(GL_TRIANGLES, shaderProgram);
 
     }
@@ -313,7 +323,7 @@ public class Renderer extends AbstractRenderer{
     };
     
 
-    
+
     private GLFWScrollCallback scrollCallback = new GLFWScrollCallback() {
         @Override public void invoke (long window, double dx, double dy) {
         }
