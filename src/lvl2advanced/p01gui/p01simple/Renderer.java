@@ -132,8 +132,7 @@ public class Renderer extends AbstractRenderer{
         renderFromLight();
         renderFromViewer();
 
-        viewer.view(renderTarget.getColorTexture(), -1,0,0.5);
-        viewer.view(renderTarget.getDepthTexture(), -1,-0.5,0.5);
+
 
         textRenderer.clear();
         String text = new String(": look at console and try keys, mouse, wheel and window interaction " );
@@ -142,7 +141,8 @@ public class Renderer extends AbstractRenderer{
         textRenderer.draw();
 
 
-
+        viewer.view(renderTarget.getColorTexture(), -1,0,0.5);
+        viewer.view(renderTarget.getDepthTexture(), -1,-0.5,0.5);
 /*
         glUseProgram(shaderProgram);
         glViewport(0,0, width, height);
