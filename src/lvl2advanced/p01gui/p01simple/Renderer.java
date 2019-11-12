@@ -54,6 +54,8 @@ public class Renderer extends AbstractRenderer{
     boolean mouseButton1 = false;
     private Camera cameraLight;
 
+    private boolean line=false;
+
     public void init(){
 
         glClearColor(0.1f,0.1f,0.1f,1);
@@ -200,6 +202,11 @@ public class Renderer extends AbstractRenderer{
     }
 
     private void renderFromViewer() {
+        if(line){
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        }else{
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
 
 
         glEnable(GL_DEPTH_TEST);
@@ -269,6 +276,13 @@ public class Renderer extends AbstractRenderer{
                         break;
                     case GLFW_KEY_F:
                         camera = camera.mulRadius(1.1f);
+                        break;
+                    case GLFW_KEY_L:
+                        if(line){
+                            line=false;
+                        }else{
+                            line=true;
+                        }
                         break;
                 }
             }
