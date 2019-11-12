@@ -134,14 +134,14 @@ public class Renderer extends AbstractRenderer{
 
         viewer.view(renderTarget.getColorTexture(), -1,0,0.5);
         viewer.view(renderTarget.getDepthTexture(), -1,-0.5,0.5);
-/*
+
         textRenderer.clear();
         String text = new String(": look at console and try keys, mouse, wheel and window interaction " );
         textRenderer.addStr2D(3, height-3, text);
         textRenderer.addStr2D(width-90, height-3, "Štěpán Cellar");
         textRenderer.draw();
 
- */
+
 
 /*
         glUseProgram(shaderProgram);
@@ -174,6 +174,7 @@ public class Renderer extends AbstractRenderer{
 
     private void renderFromLight() {
 
+        glEnable(GL_DEPTH_TEST);
         glUseProgram(shaderProgramLight);
         renderTarget.bind();
         glClearColor(0f,0.5f,0f,1);
@@ -201,7 +202,7 @@ public class Renderer extends AbstractRenderer{
     private void renderFromViewer() {
 
 
-
+        glEnable(GL_DEPTH_TEST);
         glUseProgram(shaderProgram);
         glViewport(0,0, width, height);
         //defaultni framebuffer - render do obrazovky
